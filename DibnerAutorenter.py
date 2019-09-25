@@ -1,22 +1,28 @@
 from selenium import webdriver
 import time
-import substring
-#import pandas
+import re
 
 #Goal: should ask for 3 inputs, date, start time, and hours to book for
-#list of room list, inside each room list, string with starting time
-
-#day = input("What day do you want to rent? ")
-#startTime = input("What time do you want to rent your room? Please enter number then am/pm. ")
-#hours = input("How many hours would you like to rent your room for? ")
 
 roomList = {}
+roomTimes = ["9am","10am","11am","12pm","1pm","2pm","3pm","4pm","5pm","6pm","7pm","8pm","9pm","10pm","11pm"]
+userTimes = [] #hours that the user wants the room rented
 
+#day = input("What day do you want to rent? ")
+startTime = input("What time do you want to rent your room? Please enter number then am/pm. ")
+hours = input("How many hours would you like to rent your room for? ")
+hours = int(hours)
+
+startingIndex = roomTimes.index(startTime)
+for i in range(hours):
+    userTimes.append(roomTimes[i+startingIndex]) #iterate roomTimes to find correct hours
+
+print(userTimes)
 driver = webdriver.Chrome()
 driver.get("https://nyu.libcal.com/booking/berndibner2")
 
 elem = driver.find_elements_by_class_name("lc_rm_a")
-time.sleep(1) #delay to load page
+time.sleep(2) #delay to load page
 
 for option in elem:
     singleRoomData = option.get_attribute("title") #grab each room data
@@ -35,6 +41,9 @@ for option in elem:
     else:
         roomList[key].append(value)
 
+
+foundRoom = False
+#while (foundRoom != True):
 
     #option.click()
 
