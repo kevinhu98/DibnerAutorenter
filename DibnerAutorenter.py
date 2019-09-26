@@ -8,6 +8,7 @@ roomList = {}
 roomTimes = ["9am","10am","11am","12pm","1pm","2pm","3pm","4pm","5pm","6pm","7pm","8pm","9pm","10pm","11pm"]
 userTimes = [] #hours that the user wants the room rented
 
+
 #day = input("What day do you want to rent? ")
 startTime = input("What time do you want to rent your room? Please enter number then am/pm. ")
 hours = input("How many hours would you like to rent your room for? ")
@@ -17,7 +18,7 @@ startingIndex = roomTimes.index(startTime)
 for i in range(hours):
     userTimes.append(roomTimes[i+startingIndex]) #iterate roomTimes to find correct hours
 
-print(userTimes)
+
 driver = webdriver.Chrome()
 driver.get("https://nyu.libcal.com/booking/berndibner2")
 
@@ -30,7 +31,6 @@ for option in elem:
     singleRoomData = singleRoomData.split()
     key = singleRoomData[2] #roomID
     value = singleRoomData[3] #room initial time
-    print(singleRoomData)
     if len(value) == 7:
         value = value[0:2] + value[5:7]
     else:
@@ -42,11 +42,13 @@ for option in elem:
         roomList[key].append(value)
 
 
-foundRoom = False
-#while (foundRoom != True):
+
+for room,hours in roomList.items():
+    if (all([z in hours for z in userTimes])):
+        print(room, "is available")
 
     #option.click()
 
+
 driver.close()
 
-print(roomList)
