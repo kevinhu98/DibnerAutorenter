@@ -17,7 +17,11 @@ roomToRentID = [] #id of each room to rent
 driver = webdriver.Chrome()
 driver.get("https://nyu.libcal.com/booking/berndibner2")
 
-#day = input("What day do you want to rent? ")
+day = input("What day do you want to rent?")
+dateTable = driver.find_elements_by_xpath("/html/body/div[2]/div[3]/section/div/div/div[2]/div[1]/div[2]/div/div/table/tbody/tr[*]/td[*]")
+#for  in dateTable:
+#    if (item == day)
+"""
 while True:
     startTime = input("What time do you want to rent your room? Please enter number then am/pm. ")
     hours = input("How many hours would you like to rent your room for? ")
@@ -88,3 +92,5 @@ submitButton = driver.find_element_by_id("s-lc-rm-sub")
 submitButton.click()
 #driver.close()
 
+"""
+driver.close()
