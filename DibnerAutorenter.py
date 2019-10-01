@@ -18,11 +18,16 @@ driver = webdriver.Chrome()
 driver.get("https://nyu.libcal.com/booking/berndibner2")
 
 #day = input("What day do you want to rent? ")
-startTime = input("What time do you want to rent your room? Please enter number then am/pm. ")
-hours = input("How many hours would you like to rent your room for? ")
-hours = int(hours)
+while True:
+    startTime = input("What time do you want to rent your room? Please enter number then am/pm. ")
+    hours = input("How many hours would you like to rent your room for? ")
+    hours = int(hours)
+    try:
+        startingIndex = roomTimes.index(startTime)
+        break
+    except ValueError:
+        print("That is not a valid time, please try again. (Note: Do not forget am/pm)")
 
-startingIndex = roomTimes.index(startTime)
 for i in range(hours):
     userTimes.append(roomTimes[i+startingIndex]) #iterate roomTimes to find correct hours
 
