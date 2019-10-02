@@ -1,6 +1,7 @@
 from selenium import webdriver
 import selenium.common.exceptions
 import datetime
+import time
 
 currentDT = datetime.datetime.now()
 
@@ -14,23 +15,28 @@ roomHourToID = {} #matchup of room+hour to html ID
 roomTimes = ["9am","10am","11am","12pm","1pm","2pm","3pm","4pm","5pm","6pm","7pm","8pm","9pm","10pm","11pm", "11:59pm"]
 userTimes = [] #hours that the user wants the room rented
 roomToRentID = [] #id of each room to rent
+now = datetime.datetime.now()
 
 driver = webdriver.Chrome()
 driver.get("https://nyu.libcal.com/booking/berndibner2")
 
-while True:
-    day = input("What day do you want to rent? ")
-    #if input is blank, day should be current day!!!!!!!!!!!!!!!!!!!!!!!!
-    if (currentDT.day > day):
-        print("You cannot enter a day in the past, please try again.")
+dayFound = False
+while (True):
+    day = input("What day do you want to rent? Enter blank for current day. ")
+    if (day == ''):
+        day = now.day
+        break
+    dateTable = driver.find_elements_by_xpath("/html/body/div[2]/div[3]/section/div/div/div[2]/div[1]/div[2]/div/div/table/tbody/tr[*]/td[*]")
+    for dateButton in dateTable:
+        if (dateButton.text == day):
+            dateButton.click() #click on specific day table on website
+            dayFound = True
+            break
+    if (dayFound == False):
+        print("The day you entered was invalid, please enter another day.")
     else:
         break
-dateTable = driver.find_elements_by_xpath("/html/body/div[2]/div[3]/section/div/div/div[2]/div[1]/div[2]/div/div/table/tbody/tr[*]/td[*]")
-for dateButton in dateTable:
-    if (dateButton.text == day):
-        dateButton.click() #click on specific day table on website
-        break
-
+        
 while True:
     startTime = input("What time do you want to rent your room? Please enter number then am/pm. ")
     hours = input("How many hours would you like to rent your room for? ")
@@ -88,8 +94,6 @@ for room,hours in roomList.items():
 for id in roomToRentID:
     elem = driver.find_element_by_id(id)
     elem.click()
-
-    #option.click()
 
 time.sleep(0.1)
 
