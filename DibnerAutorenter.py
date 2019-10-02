@@ -36,27 +36,28 @@ while (True):
         print("The day you entered was invalid, please enter another day.")
     else:
         break
-        
+
 while True:
     startTime = input("What time do you want to rent your room? Please enter number then am/pm. ")
+
+    try:
+        startingIndex = roomTimes.index(startTime)
+        break
+    except ValueError:
+        print("That is not a valid time, please try again. (Note: Do not forget am/pm)")
+        continue
+
+while True:
     hours = input("How many hours would you like to rent your room for? ")
-
-    #if day is today, time to rent should not be in past hour
-
     try:
         hours = int(hours)
     except ValueError:
-        print("This is an invalid number of hours")
+        print("This is an invalid number of hours. Please enter a valid number. ")
         continue
-
     if (hours > 3 or hours < 1):
         print("Rooms cannot be booked for more than 3 hours and must be at least 1 hour.")
-    else:
-        try:
-            startingIndex = roomTimes.index(startTime)
-            break
-        except ValueError:
-            print("That is not a valid time, please try again. (Note: Do not forget am/pm)")
+        continue
+    break
 
 for i in range(hours):
     userTimes.append(roomTimes[i+startingIndex]) #iterate roomTimes to find correct hours
