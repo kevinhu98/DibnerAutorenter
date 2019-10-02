@@ -1,15 +1,16 @@
 from selenium import webdriver
-import time
-import re
+import selenium.common.exceptions
+import datetime
 
-#Goal: should ask for 3 inputs, date, start time, and hours to book for
+currentDT = datetime.datetime.now()
+
 
 firstName = "Kevin"
 lastName =  "Hu"
 email = "kh2547@nyu.edu"
 reservationName = "Autorent"
 roomList = {} #list of rooms and available hours
-roomHourToID = {} #matchup of room+hour to ID
+roomHourToID = {} #matchup of room+hour to html ID
 roomTimes = ["9am","10am","11am","12pm","1pm","2pm","3pm","4pm","5pm","6pm","7pm","8pm","9pm","10pm","11pm", "11:59pm"]
 userTimes = [] #hours that the user wants the room rented
 roomToRentID = [] #id of each room to rent
@@ -17,22 +18,39 @@ roomToRentID = [] #id of each room to rent
 driver = webdriver.Chrome()
 driver.get("https://nyu.libcal.com/booking/berndibner2")
 
-day = input("What day do you want to rent? ")
+while True:
+    day = input("What day do you want to rent? ")
+    #if input is blank, day should be current day!!!!!!!!!!!!!!!!!!!!!!!!
+    if (currentDT.day > day):
+        print("You cannot enter a day in the past, please try again.")
+    else:
+        break
 dateTable = driver.find_elements_by_xpath("/html/body/div[2]/div[3]/section/div/div/div[2]/div[1]/div[2]/div/div/table/tbody/tr[*]/td[*]")
 for dateButton in dateTable:
     if (dateButton.text == day):
-        dateButton.click()
+        dateButton.click() #click on specific day table on website
         break
 
 while True:
     startTime = input("What time do you want to rent your room? Please enter number then am/pm. ")
     hours = input("How many hours would you like to rent your room for? ")
-    hours = int(hours)
+
+    #if day is today, time to rent should not be in past hour
+
     try:
-        startingIndex = roomTimes.index(startTime)
-        break
+        hours = int(hours)
     except ValueError:
-        print("That is not a valid time, please try again. (Note: Do not forget am/pm)")
+        print("This is an invalid number of hours")
+        continue
+
+    if (hours > 3 or hours < 1):
+        print("Rooms cannot be booked for more than 3 hours and must be at least 1 hour.")
+    else:
+        try:
+            startingIndex = roomTimes.index(startTime)
+            break
+        except ValueError:
+            print("That is not a valid time, please try again. (Note: Do not forget am/pm)")
 
 for i in range(hours):
     userTimes.append(roomTimes[i+startingIndex]) #iterate roomTimes to find correct hours
