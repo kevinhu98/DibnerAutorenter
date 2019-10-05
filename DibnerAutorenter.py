@@ -2,9 +2,12 @@ from selenium import webdriver
 import selenium.common.exceptions
 import datetime
 import time
+import imaplib
+import base64
+import email
+'''
 
 currentDT = datetime.datetime.now()
-
 
 firstName = "Kevin"
 lastName =  "Hu"
@@ -98,21 +101,38 @@ for id in roomToRentID:
 
 time.sleep(0.1)
 
-continueButton = driver.find_element_by_id("rm_tc_cont")
-continueButton.click()
+driver.find_element_by_id("rm_tc_cont").click()
+driver.find_element_by_id("fname").send_keys(firstName)
+driver.find_element_by_id("lname").send_keys(lastName)
+driver.find_element_by_id("email").send_keys(email)
+driver.find_element_by_id("nick").send_keys(reservationName)
+driver.find_element_by_id("s-lc-rm-sub").click()
 
-firstNameField = driver.find_element_by_id("fname")
-firstNameField.send_keys(firstName)
+driver.close()
 
-lastNameField = driver.find_element_by_id("lname")
-lastNameField.send_keys(lastName)
+time.sleep(30)
+'''
+with open("email_Info.txt","r") as emailInfo:
+    emailAddress = emailInfo.readline()
+    emailPassword = emailInfo.readline()
 
-emailField = driver.find_element_by_id("email")
-emailField.send_keys(email)
+mail = imaplib.IMAP4_SSL("imap.gmail.com",993)
+mail.login(emailAddress, emailPassword)
+mail.select("inbox")
 
-reservationNameField = driver.find_element_by_id("nick")
-reservationNameField.send_keys(reservationName)
+type, data = mail.search(None, 'ALL')
+mail_ids = data[0]
+id_list = mail_ids.split()
+for num in data[0].split():
+    typ, data = mail.fetch(num, '(RFC822)' )
+    raw_email = data[0][1]
 
-submitButton = driver.find_element_by_id("s-lc-rm-sub")
-submitButton.click()
-#driver.close()
+raw_email_string = raw_email.decode('utf-8')
+email_message = email.message_from_string(raw_email_string)
+
+if email_message.is_multipart():
+    for payload in email_message.get_payload():
+        # if payload.is_multipart(): ...
+        print(payload.get_payload(decode=True).decode('utf-8'))
+else:
+    print (email_message.get_payload(decode=True).decode('utf-8'))
