@@ -3,15 +3,14 @@ import selenium.common.exceptions
 import datetime
 import time
 import imaplib
-import base64
 import email
-'''
+
 
 currentDT = datetime.datetime.now()
 
 firstName = "Kevin"
 lastName =  "Hu"
-email = "kh2547@nyu.edu"
+userEmail = "kh2547@nyu.edu"
 reservationName = "Autorent"
 roomList = {} #list of rooms and available hours
 roomHourToID = {} #matchup of room+hour to html ID
@@ -104,14 +103,14 @@ time.sleep(0.1)
 driver.find_element_by_id("rm_tc_cont").click()
 driver.find_element_by_id("fname").send_keys(firstName)
 driver.find_element_by_id("lname").send_keys(lastName)
-driver.find_element_by_id("email").send_keys(email)
+driver.find_element_by_id("email").send_keys(userEmail)
 driver.find_element_by_id("nick").send_keys(reservationName)
 driver.find_element_by_id("s-lc-rm-sub").click()
 
 driver.close()
 
-time.sleep(30)
-'''
+time.sleep(20)
+
 with open("email_Info.txt","r") as emailInfo:
     emailAddress = emailInfo.readline()
     emailPassword = emailInfo.readline()
@@ -131,8 +130,11 @@ raw_email_string = raw_email.decode('utf-8')
 email_message = email.message_from_string(raw_email_string)
 
 if email_message.is_multipart():
-    for payload in email_message.get_payload():
-        # if payload.is_multipart(): ...
-        print(payload.get_payload(decode=True).decode('utf-8'))
-else:
-    print (email_message.get_payload(decode=True).decode('utf-8'))
+    for part in email_message.get_payload():
+        confirmAddress = (part.get_payload(decode=True).decode('utf-8')).split('\r\n')[3]
+        print(confirmAddress)
+        break;
+
+driver = webdriver.Chrome()
+driver.get(confirmAddress)
+driver.find_element_by_id('rm_confirm_link').click()
