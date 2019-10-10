@@ -142,3 +142,6 @@ if email_message.is_multipart():
 driver = webdriver.Chrome()
 driver.get(confirmAddress)
 driver.find_element_by_id('rm_confirm_link').click()
+
+time.sleep(3)
+driver.close()
